@@ -1,7 +1,8 @@
 (ns tic-tac-toe.app
-  (:require [compojure.core :refer :all]
-            [ring.middleware.defaults :refer :all]
-            [tic-tac-toe.routes]))
+  (:require [tic-tac-toe.routes :as routes]
+            [tic-tac-toe.json :refer [add-cheshire-encoders!]]))
 
 (defn application []
-  (wrap-defaults #'tic-tac-toe.routes/app-routes site-defaults))
+  (do
+    (add-cheshire-encoders!)
+    (routes/tic-tac-toe-api)))
