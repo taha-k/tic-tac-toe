@@ -1,32 +1,39 @@
 # tic-tac-toe
 
-FIXME: description
+A Clojure based API for playing Tic-Tac-Toe
 
 ## Installation
 
-Download from http://example.com/FIXME.
+You need Leiningen to run this project
 
-## Usage
+### development:
 
-FIXME: explanation
+Setting up REPL in IntelliJ IDEA / Cursive:
+* Go to Run -> Edit Configurations...
+* Add new configuration -> Clojure REPL -> Local
+* Select "Run nREPL with Leiningen"
+* Save configuration
 
-    $ java -jar tic-tac-toe-0.1.0-standalone.jar [args]
+Run server in REPL: Open REPL, run `(start-server)` or `(start-server 1234)`
+  to use a custom port (default is **8089**).
+  Stop server by running `(stop-server)`.
+  Code changes are automatically reloaded when a file is saved.
 
-## Options
+Using an IDE is recommended for development work. For trivial one-off
+work, the server can be compiled and started also from command line:
+`PORT=8089 lein do clean, run`.
 
-FIXME: listing of options this app accepts.
+Swagger Api doc: `http://localhost:8089/api-docs` or `http://localhost:<your-custom-port>/api-docs`
 
-## Examples
+Run application: `lein run`
+Run all tests: `lein test`
 
-...
+Run all tests, watch for changing files: `lein test-refresh`
 
-### Bugs
+Test coverage: `lein cloverage`
 
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+Linting: `lein eastwood`
+Note: macros in clojure.test often produce false errors about constant test expressions.
 
 ## License
 

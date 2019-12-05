@@ -24,6 +24,7 @@
   :target-path "target/%s"
   :test-paths ["test"]
   :plugins [[lein-environ "1.1.0"]
+            [lein-cloverage "1.0.9"]
             [lein-ancient "0.6.15"]
             [com.jakemccrary/lein-test-refresh "0.20.0"]]
   :profiles {:dev {:source-paths   ["env/dev/clj"]
