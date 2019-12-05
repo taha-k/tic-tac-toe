@@ -2,7 +2,9 @@
   (:require [org.httpkit.server :as http-kit]
             [clojure.tools.namespace.repl :refer [refresh]]
             [tic-tac-toe.app :refer :all]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [mount.core :as mount]
+            [tic-tac-toe.game.storage :as storage]))
 
 (defn port [] (Integer/parseInt (env :port "8089")))
 
@@ -14,9 +16,11 @@
   ([port]
    (reset! server (http-kit/run-server (application)
                                        {:port port}))
+   (storage/mount-state)
    (println "Server started on port" port)))
 
 (defn stop-server []
+  (mount/stop)
   (@server)
   (reset! server nil))
 

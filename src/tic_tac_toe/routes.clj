@@ -6,11 +6,11 @@
             [compojure.api.coercion.spec :as spec-coercion]
             [compojure.api.exception]
             [ring.middleware.defaults :refer :all]
-            [tic-tac-toe.handlers :as handlers]
             [clojure.tools.logging :as logging]
             [spec-tools.core :as spec-tools]
             [spec-tools.transform :as transform]
             [ring.util.response :refer [response not-found]]
+            [tic-tac-toe.game.routes :as game-routes]
             [ring.util.http-response :refer [ok] :as http-response]))
 
 (defn validation-handler [status-code]
@@ -46,26 +46,20 @@
                                           conforming-json-coercion)))
 
 (defn tic-tac-toe-api []
-  #_(api
-      (GET "/hello" []
-        :query-params [name :- String]
-        (response/ok {:message (str "Hello, " name)})))
   (api {:coercion   conforming-spec-coercion
         :exceptions {:handlers {:compojure.api.exception/request-validation  (validation-handler 400)
                                 :compojure.api.exception/response-validation (validation-handler 500)
                                 :not-found                                   not-found-exception-handler
                                 :bad-request                                 bad-request-exception-handler
-                                :unprocessable-entity                        unprocessable-entity-exception-handler}}
-        :swagger    {:ui   "/api-docs"
-                     :spec "/swagger.json"
-                     :data {:info {:title "Tic Tac Toe Rest API"
-                                   :description "Attach your client and play tic-tac-toe"}}}}
+                                :unprocessable-entity                        unprocessable-entity-exception-handler}}}
+       (swagger-routes {:ui   "/api-docs"
+                        :data {:info {:title "Tic Tac Toe Rest API"
+                                      :description "Attach your client and play tic-tac-toe"}}})
        (routes
          (context "/" []
            (GET "/health" []
              :summary "Check if alive"
              (ok  "It is ALIVE!"))
-           (GET "/request" [] handlers/request-example)
-
+           (game-routes/game-routes)
            (undocumented
                    (route/not-found "<h1>Resource not found</h1>"))))))
