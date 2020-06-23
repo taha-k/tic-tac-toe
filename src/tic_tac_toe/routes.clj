@@ -14,23 +14,23 @@
             [ring.util.http-response :refer [ok] :as http-response]))
 
 (defn validation-handler [status-code]
-  (fn [e data req]
+  (fn [e data _req]
     (logging/errorf e "Validation error: %s" data)
     (let [validation-data {::spec/problems (:problems data)}]
       {:status status-code
        :body   (with-out-str (spec/explain-out validation-data))})))
 
-(defn not-found-exception-handler [e data req]
+(defn not-found-exception-handler [e data _req]
   (logging/error e (.getMessage e))
   (http-response/not-found {:type  "not-found"
                             :error (:error data)}))
 
-(defn bad-request-exception-handler [e data req]
+(defn bad-request-exception-handler [e data _req]
   (logging/error e (.getMessage e))
   (http-response/bad-request {:type  "bad-request"
                               :error (:error data)}))
 
-(defn unprocessable-entity-exception-handler [e data req]
+(defn unprocessable-entity-exception-handler [_e data _req]
   (http-response/unprocessable-entity {:type  "unprocessable-entity"
                                        :error (:error data)}))
 

@@ -50,6 +50,30 @@
                                   (handler/mark game-id {:location last-move})))
             (is (not= (-> @store first :turns last) last-move))))))
 
+    (testing "X wins vertically ->"
+      (let [{game-id :gameId} (handler/start-game)]
+        (doseq [move ["00" "01" "10" "02"]]
+          (let [{next-player :nextPlayer} (handler/mark game-id {:location move})]
+            (testing "Make a mark"
+              (is (= (-> @store (nth (dec game-id)) :turns last) move))
+              (is (= (if (even? (-> @store (nth (dec game-id)) :turns count))
+                       "X" "O") next-player)))))
+
+        (testing "get-status should be Ongoing"
+          (let [{status :status} (handler/get-status game-id)]
+            (is (= status "Ongoing"))))
+
+        (testing "should result in X wins"
+          (let [last-move "20"
+                {next-player :nextPlayer status :status} (handler/mark game-id {:location last-move})]
+            (is (= (-> @store (nth (dec game-id)) :turns last) last-move))
+            (is (= status "X"))
+            (is (nil? next-player))))
+
+        (testing "get-status should be X"
+          (let [{status :status} (handler/get-status game-id)]
+            (is (= status "X"))))))
+
     (testing "O wins diagonally ->"
       (let [{game-id :gameId} (handler/start-game)]
         (doseq [move ["00" "02" "01" "11" "12"]]

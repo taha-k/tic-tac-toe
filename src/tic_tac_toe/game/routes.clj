@@ -9,7 +9,7 @@
   (context "/game" []
     :tags ["game"]
 
-    (GET "/start" []
+    (POST "/start" []
       :return ::game-spec/start-response
       :summary "Starts a new game by returning the gameId"
       :swagger (swagger/annotation "game/start")
