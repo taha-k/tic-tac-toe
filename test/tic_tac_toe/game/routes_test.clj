@@ -20,7 +20,7 @@
                       handler/get-status mock-get-status]
           (let [api (routes/tic-tac-toe-api)]
             (testing "GET /game/start"
-              (let [request (json-request/json-get-request "/game/start")
+              (let [request (json-request/json-post-request "/game/start" {} {})
                     response (api request)]
                 (is (= 200 (:status response)))))
 
@@ -34,29 +34,29 @@
                     response (api request)]
                 (is (= 200 (:status response)))))))))
 
-    #_(testing "Sad paths ->"
-        (testing "Invalid return types throw 500 ->"
-          (let [mock-start-game (spy/stub {:game-id "a"})
-                mock-mark (spy/stub {:some-stuff "as"})]
-            (with-redefs [handler/start-game mock-start-game
-                          handler/mark mock-mark]
-              (let [api (routes/tic-tac-toe-api)]
-                (testing "GET /game/start"
-                  (let [request (json-request/json-get-request "/game/start")
-                        response (api request)]
-                    (is (= 500 (:status response)))))
+    (testing "Sad paths ->"
+      (testing "Invalid return types throw 500 ->"
+        (let [mock-start-game (spy/stub {:game-id "a"})
+              mock-mark (spy/stub {:some-stuff "as"})]
+          (with-redefs [handler/start-game mock-start-game
+                        handler/mark mock-mark]
+            (let [api (routes/tic-tac-toe-api)]
+              (testing "GET /game/start"
+                (let [request (json-request/json-post-request "/game/start" {} {})
+                      response (api request)]
+                  (is (= 500 (:status response)))))
 
-                (testing "POST /game/:game-id/mark"
-                  (let [request (json-request/json-post-request "/game/1/mark" {} {:location "11"})
-                        response (api request)]
-                    (is (= 500 (:status response)))))))))
+              (testing "POST /game/:game-id/mark"
+                (let [request (json-request/json-post-request "/game/1/mark" {} {:location "11"})
+                      response (api request)]
+                  (is (= 500 (:status response)))))))))
 
-        (testing "Invalid requests throw 400 ->"
-          (let [mock-mark (spy/stub {:some-stuff "as"})]
-            (with-redefs [handler/mark mock-mark]
-              (let [api (routes/tic-tac-toe-api)]
-                (testing "POST /game/:game-id/mark"
-                  (let [request (json-request/json-post-request "/game/1/mark" {} {:location "32"})
-                        response (api request)]
-                    (is (= 400 (:status response))))))))))))
+      (testing "Invalid requests throw 400 ->"
+        (let [mock-mark (spy/stub {:some-stuff "as"})]
+          (with-redefs [handler/mark mock-mark]
+            (let [api (routes/tic-tac-toe-api)]
+              (testing "POST /game/:game-id/mark"
+                (let [request (json-request/json-post-request "/game/1/mark" {} {:location "32"})
+                      response (api request)]
+                  (is (= 400 (:status response))))))))))))
 

@@ -18,11 +18,11 @@
                        :error    (format "Invalid game-id %s" game-id)})))))
 
 
-(defn- is-valid-turn? [turns player]
-  (or (and (even? (count turns))
-           (= player "O"))
-      (and (odd? (count turns))
-           (= player "X"))))
+(defn- is-valid-turn? [current-turns next-player]
+  (or (and (even? (count current-turns))
+           (= next-player "X"))
+      (and (odd? (count current-turns))
+           (= next-player "O"))))
 
 (defn- check-rows-columns [player-turns]
   (->> ["0" "1" "2"]
@@ -65,12 +65,12 @@
                        :error    (format "This game has been completed with status=%s" status)})))
 
     (when (and player
-               (is-valid-turn? turns player))
+               (not (is-valid-turn? turns player)))
       (throw (ex-info (format "Wrong player played turn")
                       {:type     :unprocessable-entity
                        :error    (format "Incorrect turn played")})))
 
-    (when (some #{location} turns)
+    (when ((set turns) location)
       (throw (ex-info (format "Location is already marked")
                       {:type     :unprocessable-entity
                        :error    (format "Location is already marked")})))
